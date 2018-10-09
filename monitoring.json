@@ -94,8 +94,7 @@
         ["window", 16, false],
         ["checksum", 16, false],
         ["urgentPtr", 16, false],
-        ["options", 96, false],
-        ["payload", 16, false]
+        ["options", 96, false]
       ]
     },
     {
@@ -120,7 +119,12 @@
       "name" : "tcp_metadata_t",
       "id" : 8,
       "fields" : [
-        ["tcp_len", 16, false]
+        ["full_length", 16, false],
+        ["full_length_in_bytes", 16, false],
+        ["header_length", 16, false],
+        ["header_length_in_bytes", 16, false],
+        ["payload_length", 16, false],
+        ["payload_length_in_bytes", 16, false]
       ]
     }
   ],
@@ -439,7 +443,145 @@
               "parameters" : [
                 {
                   "type" : "field",
-                  "value" : ["userMetadata.tcp_metadata", "tcp_len"]
+                  "value" : ["userMetadata.tcp_metadata", "full_length"]
+                },
+                {
+                  "type" : "expression",
+                  "value" : {
+                    "type" : "expression",
+                    "value" : {
+                      "op" : "&",
+                      "left" : {
+                        "type" : "expression",
+                        "value" : {
+                          "op" : "<<",
+                          "left" : {
+                            "type" : "expression",
+                            "value" : {
+                              "op" : "&",
+                              "left" : {
+                                "type" : "expression",
+                                "value" : {
+                                  "op" : "+",
+                                  "left" : {
+                                    "type" : "field",
+                                    "value" : ["ipv4", "totalLen"]
+                                  },
+                                  "right" : {
+                                    "type" : "hexstr",
+                                    "value" : "0xffec"
+                                  }
+                                }
+                              },
+                              "right" : {
+                                "type" : "hexstr",
+                                "value" : "0xffff"
+                              }
+                            }
+                          },
+                          "right" : {
+                            "type" : "hexstr",
+                            "value" : "0x3"
+                          }
+                        }
+                      },
+                      "right" : {
+                        "type" : "hexstr",
+                        "value" : "0xffff"
+                      }
+                    }
+                  }
+                }
+              ],
+              "op" : "set"
+            },
+            {
+              "parameters" : [
+                {
+                  "type" : "field",
+                  "value" : ["userMetadata.tcp_metadata", "header_length"]
+                },
+                {
+                  "type" : "expression",
+                  "value" : {
+                    "type" : "expression",
+                    "value" : {
+                      "op" : "&",
+                      "left" : {
+                        "type" : "expression",
+                        "value" : {
+                          "op" : "<<",
+                          "left" : {
+                            "type" : "expression",
+                            "value" : {
+                              "op" : "&",
+                              "left" : {
+                                "type" : "field",
+                                "value" : ["tcp", "dataOffset"]
+                              },
+                              "right" : {
+                                "type" : "hexstr",
+                                "value" : "0xffff"
+                              }
+                            }
+                          },
+                          "right" : {
+                            "type" : "hexstr",
+                            "value" : "0x5"
+                          }
+                        }
+                      },
+                      "right" : {
+                        "type" : "hexstr",
+                        "value" : "0xffff"
+                      }
+                    }
+                  }
+                }
+              ],
+              "op" : "set"
+            },
+            {
+              "parameters" : [
+                {
+                  "type" : "field",
+                  "value" : ["userMetadata.tcp_metadata", "payload_length"]
+                },
+                {
+                  "type" : "expression",
+                  "value" : {
+                    "type" : "expression",
+                    "value" : {
+                      "op" : "&",
+                      "left" : {
+                        "type" : "expression",
+                        "value" : {
+                          "op" : "-",
+                          "left" : {
+                            "type" : "field",
+                            "value" : ["userMetadata.tcp_metadata", "full_length"]
+                          },
+                          "right" : {
+                            "type" : "field",
+                            "value" : ["userMetadata.tcp_metadata", "header_length"]
+                          }
+                        }
+                      },
+                      "right" : {
+                        "type" : "hexstr",
+                        "value" : "0xffff"
+                      }
+                    }
+                  }
+                }
+              ],
+              "op" : "set"
+            },
+            {
+              "parameters" : [
+                {
+                  "type" : "field",
+                  "value" : ["userMetadata.tcp_metadata", "full_length_in_bytes"]
                 },
                 {
                   "type" : "expression",
@@ -458,6 +600,138 @@
                           "right" : {
                             "type" : "hexstr",
                             "value" : "0xffec"
+                          }
+                        }
+                      },
+                      "right" : {
+                        "type" : "hexstr",
+                        "value" : "0xffff"
+                      }
+                    }
+                  }
+                }
+              ],
+              "op" : "set"
+            },
+            {
+              "parameters" : [
+                {
+                  "type" : "field",
+                  "value" : ["userMetadata.tcp_metadata", "header_length_in_bytes"]
+                },
+                {
+                  "type" : "expression",
+                  "value" : {
+                    "type" : "expression",
+                    "value" : {
+                      "op" : "&",
+                      "left" : {
+                        "type" : "expression",
+                        "value" : {
+                          "op" : "<<",
+                          "left" : {
+                            "type" : "expression",
+                            "value" : {
+                              "op" : "&",
+                              "left" : {
+                                "type" : "field",
+                                "value" : ["tcp", "dataOffset"]
+                              },
+                              "right" : {
+                                "type" : "hexstr",
+                                "value" : "0xffff"
+                              }
+                            }
+                          },
+                          "right" : {
+                            "type" : "hexstr",
+                            "value" : "0x2"
+                          }
+                        }
+                      },
+                      "right" : {
+                        "type" : "hexstr",
+                        "value" : "0xffff"
+                      }
+                    }
+                  }
+                }
+              ],
+              "op" : "set"
+            },
+            {
+              "parameters" : [
+                {
+                  "type" : "field",
+                  "value" : ["userMetadata.tcp_metadata", "payload_length_in_bytes"]
+                },
+                {
+                  "type" : "expression",
+                  "value" : {
+                    "type" : "expression",
+                    "value" : {
+                      "op" : "&",
+                      "left" : {
+                        "type" : "expression",
+                        "value" : {
+                          "op" : "-",
+                          "left" : {
+                            "type" : "expression",
+                            "value" : {
+                              "op" : "&",
+                              "left" : {
+                                "type" : "expression",
+                                "value" : {
+                                  "op" : "+",
+                                  "left" : {
+                                    "type" : "field",
+                                    "value" : ["ipv4", "totalLen"]
+                                  },
+                                  "right" : {
+                                    "type" : "hexstr",
+                                    "value" : "0xffec"
+                                  }
+                                }
+                              },
+                              "right" : {
+                                "type" : "hexstr",
+                                "value" : "0xffff"
+                              }
+                            }
+                          },
+                          "right" : {
+                            "type" : "expression",
+                            "value" : {
+                              "op" : "&",
+                              "left" : {
+                                "type" : "expression",
+                                "value" : {
+                                  "op" : "<<",
+                                  "left" : {
+                                    "type" : "expression",
+                                    "value" : {
+                                      "op" : "&",
+                                      "left" : {
+                                        "type" : "field",
+                                        "value" : ["tcp", "dataOffset"]
+                                      },
+                                      "right" : {
+                                        "type" : "hexstr",
+                                        "value" : "0xffff"
+                                      }
+                                    }
+                                  },
+                                  "right" : {
+                                    "type" : "hexstr",
+                                    "value" : "0x2"
+                                  }
+                                }
+                              },
+                              "right" : {
+                                "type" : "hexstr",
+                                "value" : "0xffff"
+                              }
+                            }
                           }
                         }
                       },
@@ -550,7 +824,7 @@
       "id" : 0,
       "source_info" : {
         "filename" : "monitoring.p4",
-        "line" : 675,
+        "line" : 692,
         "column" : 8,
         "source_fragment" : "MyDeparser"
       },
@@ -585,7 +859,7 @@
           "parameters" : [],
           "source_info" : {
             "filename" : "monitoring.p4",
-            "line" : 496,
+            "line" : 513,
             "column" : 8,
             "source_fragment" : "mark_to_drop()"
           }
@@ -616,7 +890,7 @@
           ],
           "source_info" : {
             "filename" : "monitoring.p4",
-            "line" : 502,
+            "line" : 519,
             "column" : 8,
             "source_fragment" : "standard_metadata.egress_spec = port"
           }
@@ -630,7 +904,7 @@
       "id" : 0,
       "source_info" : {
         "filename" : "monitoring.p4",
-        "line" : 463,
+        "line" : 480,
         "column" : 8,
         "source_fragment" : "MyIngress"
       },
@@ -641,7 +915,7 @@
           "id" : 0,
           "source_info" : {
             "filename" : "monitoring.p4",
-            "line" : 320,
+            "line" : 333,
             "column" : 10,
             "source_fragment" : "ip_debug_table"
           },
@@ -749,7 +1023,7 @@
           "id" : 1,
           "source_info" : {
             "filename" : "monitoring.p4",
-            "line" : 362,
+            "line" : 375,
             "column" : 10,
             "source_fragment" : "tcp_debug_table"
           },
@@ -762,8 +1036,26 @@
             },
             {
               "match_type" : "exact",
-              "name" : "meta.tcp_metadata.tcp_len",
-              "target" : ["userMetadata.tcp_metadata", "tcp_len"],
+              "name" : "meta.tcp_metadata.full_length",
+              "target" : ["userMetadata.tcp_metadata", "full_length"],
+              "mask" : null
+            },
+            {
+              "match_type" : "exact",
+              "name" : "meta.tcp_metadata.header_length",
+              "target" : ["userMetadata.tcp_metadata", "header_length"],
+              "mask" : null
+            },
+            {
+              "match_type" : "exact",
+              "name" : "meta.tcp_metadata.payload_length",
+              "target" : ["userMetadata.tcp_metadata", "payload_length"],
+              "mask" : null
+            },
+            {
+              "match_type" : "exact",
+              "name" : "meta.tcp_metadata.payload_length_in_bytes",
+              "target" : ["userMetadata.tcp_metadata", "payload_length_in_bytes"],
               "mask" : null
             },
             {
@@ -831,12 +1123,6 @@
               "name" : "hdr.tcp.urgentPtr",
               "target" : ["tcp", "urgentPtr"],
               "mask" : null
-            },
-            {
-              "match_type" : "exact",
-              "name" : "hdr.tcp.payload",
-              "target" : ["tcp", "payload"],
-              "mask" : null
             }
           ],
           "match_type" : "exact",
@@ -863,7 +1149,7 @@
           "id" : 2,
           "source_info" : {
             "filename" : "monitoring.p4",
-            "line" : 504,
+            "line" : 521,
             "column" : 10,
             "source_fragment" : "port_exact"
           },
@@ -931,7 +1217,7 @@
           "id" : 0,
           "source_info" : {
             "filename" : "monitoring.p4",
-            "line" : 527,
+            "line" : 544,
             "column" : 11,
             "source_fragment" : "hdr.ethernet.isValid()"
           },
@@ -954,7 +1240,7 @@
           "id" : 1,
           "source_info" : {
             "filename" : "monitoring.p4",
-            "line" : 533,
+            "line" : 550,
             "column" : 15,
             "source_fragment" : "hdr.ethernet.etherType == TYPE_ARP"
           },
@@ -980,7 +1266,7 @@
           "id" : 2,
           "source_info" : {
             "filename" : "monitoring.p4",
-            "line" : 542,
+            "line" : 559,
             "column" : 19,
             "source_fragment" : "hdr.ipv4.isValid()"
           },
@@ -1003,7 +1289,7 @@
           "id" : 3,
           "source_info" : {
             "filename" : "monitoring.p4",
-            "line" : 549,
+            "line" : 566,
             "column" : 23,
             "source_fragment" : "hdr.ipv4.protocol == IP_PROTO_TCP"
           },
@@ -1031,7 +1317,7 @@
       "id" : 1,
       "source_info" : {
         "filename" : "monitoring.p4",
-        "line" : 580,
+        "line" : 597,
         "column" : 8,
         "source_fragment" : "MyEgress"
       },

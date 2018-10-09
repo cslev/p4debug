@@ -111,7 +111,7 @@ header tcp_t2
     bit<16> checksum;
     bit<16> urgentPtr;
     bit<96> options;
-    tcp_payload_t payload;
+    // tcp_payload_t payload;
 }
 
 header udp_t
@@ -124,10 +124,17 @@ header udp_t
 }
 
 
+
+
 // metadata for TCP (mostly, fort TCP checksum recomputation)
 struct tcp_metadata_t
 {
-    bit<16> tcp_len; //ipv4.totalLen - 20
+    bit<16> full_length; //ipv4.totalLen - 20
+    bit<16> full_length_in_bytes;
+    bit<16> header_length;
+    bit<16> header_length_in_bytes;
+    bit<16> payload_length;
+    bit<16> payload_length_in_bytes;
 }
 
 struct udp_metadata_t
@@ -211,7 +218,13 @@ parser MyParser(packet_in packet,
     state parse_tcp
     {
         packet.extract(hdr.tcp);
-        meta.tcp_metadata.tcp_len = hdr.ipv4.totalLen - IPV4_LEN;
+        meta.tcp_metadata.full_length = (hdr.ipv4.totalLen - IPV4_LEN) * 8;
+        meta.tcp_metadata.header_length = (((bit<16>)hdr.tcp.dataOffset) << 5);
+        meta.tcp_metadata.payload_length = meta.tcp_metadata.full_length - meta.tcp_metadata.header_length;
+
+        meta.tcp_metadata.full_length_in_bytes =  (hdr.ipv4.totalLen - IPV4_LEN);
+        meta.tcp_metadata.header_length_in_bytes = (bit<16>)hdr.tcp.dataOffset << 2;
+        meta.tcp_metadata.payload_length_in_bytes = (hdr.ipv4.totalLen - IPV4_LEN) - ((bit<16>)hdr.tcp.dataOffset << 2);
         transition accept;
     }
 
@@ -365,7 +378,10 @@ control tcp_debug(in headers hdr,
         key =
         {
             standard_metadata.ingress_port:  exact;
-            meta.tcp_metadata.tcp_len:       exact;
+            meta.tcp_metadata.full_length:   exact;
+            meta.tcp_metadata.header_length: exact;
+            meta.tcp_metadata.payload_length:exact;
+            meta.tcp_metadata.payload_length_in_bytes: exact;
             hdr.tcp.srcPort:                 exact;
             hdr.tcp.dstPort:                 exact;
             hdr.tcp.seqNo:                   exact;
@@ -377,7 +393,8 @@ control tcp_debug(in headers hdr,
             hdr.tcp.window:                  exact;
             hdr.tcp.checksum:                exact;
             hdr.tcp.urgentPtr:               exact;
-            hdr.tcp.payload:                 exact;
+
+            // hdr.tcp.payload:                 exact;
         }
 
         // we define no action here, as this table has only debug purposes
