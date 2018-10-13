@@ -111,7 +111,6 @@ header tcp_t2
     bit<16> checksum;
     bit<16> urgentPtr;
     bit<96> options;
-    // tcp_payload_t payload;
 }
 
 header udp_t
@@ -126,7 +125,7 @@ header udp_t
 
 
 
-// metadata for TCP (mostly, fort TCP checksum recomputation)
+// metadata for TCP (mostly, for TCP checksum recomputation if needed)
 struct tcp_metadata_t
 {
     bit<16> full_length; //ipv4.totalLen - 20
@@ -155,8 +154,6 @@ struct metadata {
 
 struct headers {
     ethernet_t   ethernet;
-    // vlan_t[VLAN_DEPTH]       vlan;
-    // vlan_t       vlan;
     arp_t        arp;
     ipv4_t       ipv4;
     tcp_t2        tcp;
@@ -393,8 +390,6 @@ control tcp_debug(in headers hdr,
             hdr.tcp.window:                  exact;
             hdr.tcp.checksum:                exact;
             hdr.tcp.urgentPtr:               exact;
-
-            // hdr.tcp.payload:                 exact;
         }
 
         // we define no action here, as this table has only debug purposes
@@ -456,9 +451,14 @@ control meta_debug(inout metadata meta)
         //define keys to match
         key =
         {
-            meta.modified:                           exact;
-            meta.udp_metadata.udp_payload_length:    exact;
-            // meta.fwd_metadata:          exact;
+            meta.modified:                              exact;
+            meta.udp_metadata.udp_payload_length:       exact;
+            meta.tcp_metadata.header_length:            exact;
+            meta.tcp_metadata.header_length_in_bytes:   exact;
+            meta.tcp_metadata.payload_length:           exact;
+            meta.tcp_metadata.payload_length_in_bytes:  exact;
+            meta.tcp_metadata.full_length:              exact;
+            meta.tcp_metadata.full_length_in_bytes:     exact;
         }
         //we define no action here as this
         actions = { NoAction; }
@@ -583,7 +583,7 @@ control MyIngress(inout headers hdr,
                 meta_debug_start.apply(meta);
             #endif //ENABLE_DEBUG_META
 
-
+            //do the actual forwarding by applying port_exact table and its actions
             port_exact.apply();
 
         }
