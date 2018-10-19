@@ -1,9 +1,4 @@
 {
-  "program" : "monitoring.p4",
-  "__meta__" : {
-    "version" : [2, 7],
-    "compiler" : "https://github.com/p4lang/p4c"
-  },
   "header_types" : [
     {
       "name" : "scalars_0",
@@ -15,8 +10,36 @@
       ]
     },
     {
-      "name" : "ethernet_t",
+      "name" : "standard_metadata",
       "id" : 1,
+      "fields" : [
+        ["ingress_port", 9, false],
+        ["egress_spec", 9, false],
+        ["egress_port", 9, false],
+        ["clone_spec", 32, false],
+        ["instance_type", 32, false],
+        ["drop", 1, false],
+        ["recirculate_port", 16, false],
+        ["packet_length", 32, false],
+        ["enq_timestamp", 32, false],
+        ["enq_qdepth", 19, false],
+        ["deq_timedelta", 32, false],
+        ["deq_qdepth", 19, false],
+        ["ingress_global_timestamp", 48, false],
+        ["egress_global_timestamp", 48, false],
+        ["lf_field_list", 32, false],
+        ["mcast_grp", 16, false],
+        ["resubmit_flag", 32, false],
+        ["egress_rid", 16, false],
+        ["checksum_error", 1, false],
+        ["recirculate_flag", 32, false],
+        ["parser_error", 32, false],
+        ["_padding", 5, false]
+      ]
+    },
+    {
+      "name" : "ethernet_t",
+      "id" : 2,
       "fields" : [
         ["dstAddr", 48, false],
         ["srcAddr", 48, false],
@@ -25,7 +48,7 @@
     },
     {
       "name" : "arp_t",
-      "id" : 2,
+      "id" : 3,
       "fields" : [
         ["h_type", 16, false],
         ["p_type", 16, false],
@@ -40,7 +63,7 @@
     },
     {
       "name" : "ipv4_t",
-      "id" : 3,
+      "id" : 4,
       "fields" : [
         ["version", 4, false],
         ["ihl", 4, false],
@@ -58,7 +81,7 @@
     },
     {
       "name" : "tcp_t2",
-      "id" : 4,
+      "id" : 5,
       "fields" : [
         ["srcPort", 16, false],
         ["dstPort", 16, false],
@@ -76,7 +99,7 @@
     },
     {
       "name" : "udp_t",
-      "id" : 5,
+      "id" : 6,
       "fields" : [
         ["srcPort", 16, false],
         ["dstPort", 16, false],
@@ -87,14 +110,14 @@
     },
     {
       "name" : "udp_metadata_t",
-      "id" : 6,
+      "id" : 7,
       "fields" : [
         ["udp_payload_length", 16, false]
       ]
     },
     {
       "name" : "tcp_metadata_t",
-      "id" : 7,
+      "id" : 8,
       "fields" : [
         ["full_length", 16, false],
         ["full_length_in_bytes", 16, false],
@@ -102,31 +125,6 @@
         ["header_length_in_bytes", 16, false],
         ["payload_length", 16, false],
         ["payload_length_in_bytes", 16, false]
-      ]
-    },
-    {
-      "name" : "standard_metadata",
-      "id" : 8,
-      "fields" : [
-        ["ingress_port", 9, false],
-        ["egress_spec", 9, false],
-        ["egress_port", 9, false],
-        ["clone_spec", 32, false],
-        ["instance_type", 32, false],
-        ["drop", 1, false],
-        ["recirculate_port", 16, false],
-        ["packet_length", 32, false],
-        ["enq_timestamp", 32, false],
-        ["enq_qdepth", 19, false],
-        ["deq_timedelta", 32, false],
-        ["deq_qdepth", 19, false],
-        ["ingress_global_timestamp", 48, false],
-        ["lf_field_list", 32, false],
-        ["mcast_grp", 16, false],
-        ["resubmit_flag", 1, false],
-        ["egress_rid", 16, false],
-        ["checksum_error", 1, false],
-        ["_padding", 4, false]
       ]
     }
   ],
@@ -825,7 +823,7 @@
       "name" : "deparser",
       "id" : 0,
       "source_info" : {
-        "filename" : "monitoring.p4",
+        "filename" : "../../p4debug/monitoring.p4",
         "line" : 692,
         "column" : 8,
         "source_fragment" : "MyDeparser"
@@ -860,7 +858,7 @@
           "op" : "drop",
           "parameters" : [],
           "source_info" : {
-            "filename" : "monitoring.p4",
+            "filename" : "../../p4debug/monitoring.p4",
             "line" : 513,
             "column" : 8,
             "source_fragment" : "mark_to_drop()"
@@ -891,7 +889,7 @@
             }
           ],
           "source_info" : {
-            "filename" : "monitoring.p4",
+            "filename" : "../../p4debug/monitoring.p4",
             "line" : 519,
             "column" : 8,
             "source_fragment" : "standard_metadata.egress_spec = port"
@@ -905,7 +903,7 @@
       "name" : "ingress",
       "id" : 0,
       "source_info" : {
-        "filename" : "monitoring.p4",
+        "filename" : "../../p4debug/monitoring.p4",
         "line" : 480,
         "column" : 8,
         "source_fragment" : "MyIngress"
@@ -916,7 +914,7 @@
           "name" : "MyIngress.ip_debug_start.ip_debug_table",
           "id" : 0,
           "source_info" : {
-            "filename" : "monitoring.p4",
+            "filename" : "../../p4debug/monitoring.p4",
             "line" : 330,
             "column" : 10,
             "source_fragment" : "ip_debug_table"
@@ -1024,7 +1022,7 @@
           "name" : "MyIngress.tcp_debug_start.tcp_debug_table",
           "id" : 1,
           "source_info" : {
-            "filename" : "monitoring.p4",
+            "filename" : "../../p4debug/monitoring.p4",
             "line" : 372,
             "column" : 10,
             "source_fragment" : "tcp_debug_table"
@@ -1150,7 +1148,7 @@
           "name" : "MyIngress.port_exact",
           "id" : 2,
           "source_info" : {
-            "filename" : "monitoring.p4",
+            "filename" : "../../p4debug/monitoring.p4",
             "line" : 521,
             "column" : 10,
             "source_fragment" : "port_exact"
@@ -1184,6 +1182,12 @@
           },
           "entries" : [
             {
+              "source_info" : {
+                "filename" : "../../p4debug/monitoring.p4",
+                "line" : 536,
+                "column" : 12,
+                "source_fragment" : "0 : portfwd(1)"
+              },
               "match_key" : [
                 {
                   "match_type" : "exact",
@@ -1197,6 +1201,12 @@
               "priority" : 1
             },
             {
+              "source_info" : {
+                "filename" : "../../p4debug/monitoring.p4",
+                "line" : 537,
+                "column" : 12,
+                "source_fragment" : "1 : portfwd(0)"
+              },
               "match_key" : [
                 {
                   "match_type" : "exact",
@@ -1218,7 +1228,7 @@
           "name" : "node_2",
           "id" : 0,
           "source_info" : {
-            "filename" : "monitoring.p4",
+            "filename" : "../../p4debug/monitoring.p4",
             "line" : 544,
             "column" : 11,
             "source_fragment" : "hdr.ethernet.isValid()"
@@ -1241,7 +1251,7 @@
           "name" : "node_3",
           "id" : 1,
           "source_info" : {
-            "filename" : "monitoring.p4",
+            "filename" : "../../p4debug/monitoring.p4",
             "line" : 550,
             "column" : 15,
             "source_fragment" : "hdr.ethernet.etherType == TYPE_ARP"
@@ -1267,7 +1277,7 @@
           "name" : "node_4",
           "id" : 2,
           "source_info" : {
-            "filename" : "monitoring.p4",
+            "filename" : "../../p4debug/monitoring.p4",
             "line" : 559,
             "column" : 19,
             "source_fragment" : "hdr.ipv4.isValid()"
@@ -1290,7 +1300,7 @@
           "name" : "node_6",
           "id" : 3,
           "source_info" : {
-            "filename" : "monitoring.p4",
+            "filename" : "../../p4debug/monitoring.p4",
             "line" : 566,
             "column" : 23,
             "source_fragment" : "hdr.ipv4.protocol == IP_PROTO_TCP"
@@ -1318,7 +1328,7 @@
       "name" : "egress",
       "id" : 1,
       "source_info" : {
-        "filename" : "monitoring.p4",
+        "filename" : "../../p4debug/monitoring.p4",
         "line" : 597,
         "column" : 8,
         "source_fragment" : "MyEgress"
@@ -1354,6 +1364,10 @@
       ["standard_metadata", "ingress_global_timestamp"]
     ],
     [
+      "intrinsic_metadata.egress_global_timestamp",
+      ["standard_metadata", "egress_global_timestamp"]
+    ],
+    [
       "intrinsic_metadata.lf_field_list",
       ["standard_metadata", "lf_field_list"]
     ],
@@ -1368,6 +1382,15 @@
     [
       "intrinsic_metadata.egress_rid",
       ["standard_metadata", "egress_rid"]
+    ],
+    [
+      "intrinsic_metadata.recirculate_flag",
+      ["standard_metadata", "recirculate_flag"]
     ]
-  ]
+  ],
+  "program" : "../../p4debug/monitoring.p4",
+  "__meta__" : {
+    "version" : [2, 18],
+    "compiler" : "https://github.com/p4lang/p4c"
+  }
 }
