@@ -5,7 +5,7 @@
 // #define ENABLE_DEBUG_ETHERNET
 // #define ENABLE_DEBUG_ARP
 #define ENABLE_DEBUG_IP
-#define ENABLE_DEBUG_TCP
+//#define ENABLE_DEBUG_TCP
 // #define ENABLE_DEBUG_UDP
 // #define ENABLE_DEBUG_META
 
@@ -169,6 +169,12 @@ error {
     BadIPv4HeaderChecksum
 }
 
+extern ExternIncrease 
+{
+   ExternIncrease(bit<8> attribute_example);
+   void increase();
+}
+
 /*************************************************************************
 *********************** P A R S E R  ***********************************
 *************************************************************************/
@@ -179,7 +185,7 @@ parser MyParser(packet_in packet,
                 inout standard_metadata_t standard_metadata)
 {
 
-    // Checksum16() ck;  // instantiate checksum unit
+    //Checksum16() ck;  // instantiate checksum unit
     state start
     {
         packet.extract(hdr.ethernet);
@@ -481,6 +487,8 @@ control MyIngress(inout headers hdr,
                   inout metadata meta,
                   inout standard_metadata_t standard_metadata)
 {
+    @userextern @name("my_extern_increase")
+    ExternIncrease(0x01) my_extern_increase;
 
     //create an instance of the debug ingress processing
     #ifdef ENABLE_DEBUG_ETHERNET
