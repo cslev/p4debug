@@ -18,6 +18,8 @@
 // #define ENABLE_DEBUG_UDP_EGRESS
 // #define ENABLE_DEBUG_META_EGRESS
 
+
+
 const bit<16> UDP_LEN = 16w8;
 const bit<16> IPV4_LEN = 16w20;
 
@@ -169,11 +171,12 @@ error {
     BadIPv4HeaderChecksum
 }
 
-extern ExternIncrease 
-{
-   ExternIncrease(bit<8> attribute_example);
-   void increase();
-}
+// extern ExternIncrease;
+//{
+//   ExternIncrease(bit<8> attribute_example);
+//   void increase();
+//}
+
 
 /*************************************************************************
 *********************** P A R S E R  ***********************************
@@ -487,8 +490,9 @@ control MyIngress(inout headers hdr,
                   inout metadata meta,
                   inout standard_metadata_t standard_metadata)
 {
-    @userextern @name("my_extern_increase")
-    ExternIncrease(0x01) my_extern_increase;
+    // @userextern @name("my_extern_increase")
+    // ExternIncrease(0x01) my_extern_increase;
+
 
     //create an instance of the debug ingress processing
     #ifdef ENABLE_DEBUG_ETHERNET
@@ -524,6 +528,11 @@ control MyIngress(inout headers hdr,
     // ----------------- PORT FORWARD ACTIONS AND RULES -------------------
     action portfwd(egressSpec_t port)
     {
+        p4_logger(hdr.ipv4.srcAddr);
+        p4_logger(hdr.ipv4.hdrChecksum);
+        p4_logger((bit<24>)0x012321);
+        
+
         standard_metadata.egress_spec = port;
     }
     table port_exact

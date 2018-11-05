@@ -824,7 +824,7 @@
       "id" : 0,
       "source_info" : {
         "filename" : "../../p4debug/monitoring.p4",
-        "line" : 692,
+        "line" : 709,
         "column" : 8,
         "source_fragment" : "MyDeparser"
       },
@@ -844,14 +844,8 @@
       "primitives" : []
     },
     {
-      "name" : "NoAction",
-      "id" : 1,
-      "runtime_data" : [],
-      "primitives" : []
-    },
-    {
       "name" : "MyIngress.drop",
-      "id" : 2,
+      "id" : 1,
       "runtime_data" : [],
       "primitives" : [
         {
@@ -859,7 +853,7 @@
           "parameters" : [],
           "source_info" : {
             "filename" : "../../p4debug/monitoring.p4",
-            "line" : 513,
+            "line" : 525,
             "column" : 8,
             "source_fragment" : "mark_to_drop()"
           }
@@ -868,7 +862,7 @@
     },
     {
       "name" : "MyIngress.portfwd",
-      "id" : 3,
+      "id" : 2,
       "runtime_data" : [
         {
           "name" : "port",
@@ -876,6 +870,51 @@
         }
       ],
       "primitives" : [
+        {
+          "op" : "p4_logger",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["ipv4", "srcAddr"]
+            }
+          ],
+          "source_info" : {
+            "filename" : "../../p4debug/monitoring.p4",
+            "line" : 531,
+            "column" : 8,
+            "source_fragment" : "p4_logger(hdr.ipv4.srcAddr)"
+          }
+        },
+        {
+          "op" : "p4_logger",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["ipv4", "hdrChecksum"]
+            }
+          ],
+          "source_info" : {
+            "filename" : "../../p4debug/monitoring.p4",
+            "line" : 532,
+            "column" : 8,
+            "source_fragment" : "p4_logger(hdr.ipv4.hdrChecksum)"
+          }
+        },
+        {
+          "op" : "p4_logger",
+          "parameters" : [
+            {
+              "type" : "hexstr",
+              "value" : "0x012321"
+            }
+          ],
+          "source_info" : {
+            "filename" : "../../p4debug/monitoring.p4",
+            "line" : 533,
+            "column" : 8,
+            "source_fragment" : "p4_logger((bit<24>)0x012321)"
+          }
+        },
         {
           "op" : "assign",
           "parameters" : [
@@ -890,7 +929,7 @@
           ],
           "source_info" : {
             "filename" : "../../p4debug/monitoring.p4",
-            "line" : 519,
+            "line" : 536,
             "column" : 8,
             "source_fragment" : "standard_metadata.egress_spec = port"
           }
@@ -904,7 +943,7 @@
       "id" : 0,
       "source_info" : {
         "filename" : "../../p4debug/monitoring.p4",
-        "line" : 480,
+        "line" : 489,
         "column" : 8,
         "source_fragment" : "MyIngress"
       },
@@ -915,7 +954,7 @@
           "id" : 0,
           "source_info" : {
             "filename" : "../../p4debug/monitoring.p4",
-            "line" : 330,
+            "line" : 339,
             "column" : 10,
             "source_fragment" : "ip_debug_table"
           },
@@ -1007,9 +1046,9 @@
           "direct_meters" : null,
           "action_ids" : [0],
           "actions" : ["NoAction"],
-          "base_default_next" : "node_6",
+          "base_default_next" : "MyIngress.port_exact",
           "next_tables" : {
-            "NoAction" : "node_6"
+            "NoAction" : "MyIngress.port_exact"
           },
           "default_entry" : {
             "action_id" : 0,
@@ -1019,137 +1058,11 @@
           }
         },
         {
-          "name" : "MyIngress.tcp_debug_start.tcp_debug_table",
+          "name" : "MyIngress.port_exact",
           "id" : 1,
           "source_info" : {
             "filename" : "../../p4debug/monitoring.p4",
-            "line" : 372,
-            "column" : 10,
-            "source_fragment" : "tcp_debug_table"
-          },
-          "key" : [
-            {
-              "match_type" : "exact",
-              "name" : "standard_metadata.ingress_port",
-              "target" : ["standard_metadata", "ingress_port"],
-              "mask" : null
-            },
-            {
-              "match_type" : "exact",
-              "name" : "meta.tcp_metadata.full_length",
-              "target" : ["userMetadata.tcp_metadata", "full_length"],
-              "mask" : null
-            },
-            {
-              "match_type" : "exact",
-              "name" : "meta.tcp_metadata.header_length",
-              "target" : ["userMetadata.tcp_metadata", "header_length"],
-              "mask" : null
-            },
-            {
-              "match_type" : "exact",
-              "name" : "meta.tcp_metadata.payload_length",
-              "target" : ["userMetadata.tcp_metadata", "payload_length"],
-              "mask" : null
-            },
-            {
-              "match_type" : "exact",
-              "name" : "meta.tcp_metadata.payload_length_in_bytes",
-              "target" : ["userMetadata.tcp_metadata", "payload_length_in_bytes"],
-              "mask" : null
-            },
-            {
-              "match_type" : "exact",
-              "name" : "hdr.tcp.srcPort",
-              "target" : ["tcp", "srcPort"],
-              "mask" : null
-            },
-            {
-              "match_type" : "exact",
-              "name" : "hdr.tcp.dstPort",
-              "target" : ["tcp", "dstPort"],
-              "mask" : null
-            },
-            {
-              "match_type" : "exact",
-              "name" : "hdr.tcp.seqNo",
-              "target" : ["tcp", "seqNo"],
-              "mask" : null
-            },
-            {
-              "match_type" : "exact",
-              "name" : "hdr.tcp.ackNo",
-              "target" : ["tcp", "ackNo"],
-              "mask" : null
-            },
-            {
-              "match_type" : "exact",
-              "name" : "hdr.tcp.dataOffset",
-              "target" : ["tcp", "dataOffset"],
-              "mask" : null
-            },
-            {
-              "match_type" : "exact",
-              "name" : "hdr.tcp.flags_1",
-              "target" : ["tcp", "flags_1"],
-              "mask" : null
-            },
-            {
-              "match_type" : "exact",
-              "name" : "hdr.tcp.flags_2",
-              "target" : ["tcp", "flags_2"],
-              "mask" : null
-            },
-            {
-              "match_type" : "exact",
-              "name" : "hdr.tcp.flags_3",
-              "target" : ["tcp", "flags_3"],
-              "mask" : null
-            },
-            {
-              "match_type" : "exact",
-              "name" : "hdr.tcp.window",
-              "target" : ["tcp", "window"],
-              "mask" : null
-            },
-            {
-              "match_type" : "exact",
-              "name" : "hdr.tcp.checksum",
-              "target" : ["tcp", "checksum"],
-              "mask" : null
-            },
-            {
-              "match_type" : "exact",
-              "name" : "hdr.tcp.urgentPtr",
-              "target" : ["tcp", "urgentPtr"],
-              "mask" : null
-            }
-          ],
-          "match_type" : "exact",
-          "type" : "simple",
-          "max_size" : 1024,
-          "with_counters" : false,
-          "support_timeout" : false,
-          "direct_meters" : null,
-          "action_ids" : [1],
-          "actions" : ["NoAction"],
-          "base_default_next" : "MyIngress.port_exact",
-          "next_tables" : {
-            "NoAction" : "MyIngress.port_exact"
-          },
-          "default_entry" : {
-            "action_id" : 1,
-            "action_const" : true,
-            "action_data" : [],
-            "action_entry_const" : true
-          }
-        },
-        {
-          "name" : "MyIngress.port_exact",
-          "id" : 2,
-          "source_info" : {
-            "filename" : "../../p4debug/monitoring.p4",
-            "line" : 521,
+            "line" : 538,
             "column" : 10,
             "source_fragment" : "port_exact"
           },
@@ -1167,7 +1080,7 @@
           "with_counters" : false,
           "support_timeout" : false,
           "direct_meters" : null,
-          "action_ids" : [3, 2],
+          "action_ids" : [2, 1],
           "actions" : ["MyIngress.portfwd", "MyIngress.drop"],
           "base_default_next" : null,
           "next_tables" : {
@@ -1175,7 +1088,7 @@
             "MyIngress.drop" : null
           },
           "default_entry" : {
-            "action_id" : 2,
+            "action_id" : 1,
             "action_const" : false,
             "action_data" : [],
             "action_entry_const" : false
@@ -1184,7 +1097,7 @@
             {
               "source_info" : {
                 "filename" : "../../p4debug/monitoring.p4",
-                "line" : 536,
+                "line" : 553,
                 "column" : 12,
                 "source_fragment" : "0 : portfwd(1)"
               },
@@ -1195,7 +1108,7 @@
                 }
               ],
               "action_entry" : {
-                "action_id" : 3,
+                "action_id" : 2,
                 "action_data" : ["0x1"]
               },
               "priority" : 1
@@ -1203,7 +1116,7 @@
             {
               "source_info" : {
                 "filename" : "../../p4debug/monitoring.p4",
-                "line" : 537,
+                "line" : 554,
                 "column" : 12,
                 "source_fragment" : "1 : portfwd(0)"
               },
@@ -1214,7 +1127,7 @@
                 }
               ],
               "action_entry" : {
-                "action_id" : 3,
+                "action_id" : 2,
                 "action_data" : ["0x0"]
               },
               "priority" : 2
@@ -1229,7 +1142,7 @@
           "id" : 0,
           "source_info" : {
             "filename" : "../../p4debug/monitoring.p4",
-            "line" : 544,
+            "line" : 561,
             "column" : 11,
             "source_fragment" : "hdr.ethernet.isValid()"
           },
@@ -1252,7 +1165,7 @@
           "id" : 1,
           "source_info" : {
             "filename" : "../../p4debug/monitoring.p4",
-            "line" : 550,
+            "line" : 567,
             "column" : 15,
             "source_fragment" : "hdr.ethernet.etherType == TYPE_ARP"
           },
@@ -1278,7 +1191,7 @@
           "id" : 2,
           "source_info" : {
             "filename" : "../../p4debug/monitoring.p4",
-            "line" : 559,
+            "line" : 576,
             "column" : 19,
             "source_fragment" : "hdr.ipv4.isValid()"
           },
@@ -1295,32 +1208,6 @@
           },
           "true_next" : "MyIngress.ip_debug_start.ip_debug_table",
           "false_next" : "MyIngress.port_exact"
-        },
-        {
-          "name" : "node_6",
-          "id" : 3,
-          "source_info" : {
-            "filename" : "../../p4debug/monitoring.p4",
-            "line" : 566,
-            "column" : 23,
-            "source_fragment" : "hdr.ipv4.protocol == IP_PROTO_TCP"
-          },
-          "expression" : {
-            "type" : "expression",
-            "value" : {
-              "op" : "==",
-              "left" : {
-                "type" : "field",
-                "value" : ["ipv4", "protocol"]
-              },
-              "right" : {
-                "type" : "hexstr",
-                "value" : "0x06"
-              }
-            }
-          },
-          "true_next" : "MyIngress.tcp_debug_start.tcp_debug_table",
-          "false_next" : "MyIngress.port_exact"
         }
       ]
     },
@@ -1329,7 +1216,7 @@
       "id" : 1,
       "source_info" : {
         "filename" : "../../p4debug/monitoring.p4",
-        "line" : 597,
+        "line" : 614,
         "column" : 8,
         "source_fragment" : "MyEgress"
       },
