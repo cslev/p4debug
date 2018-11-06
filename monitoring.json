@@ -905,14 +905,14 @@
           "parameters" : [
             {
               "type" : "hexstr",
-              "value" : "0x012321"
+              "value" : "0x3ff199999999999a"
             }
           ],
           "source_info" : {
             "filename" : "../../p4debug/monitoring.p4",
             "line" : 533,
             "column" : 8,
-            "source_fragment" : "p4_logger((bit<24>)0x012321)"
+            "source_fragment" : "p4_logger((bit<64>)0x3FF199999999999A)"
           }
         },
         {
